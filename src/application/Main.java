@@ -15,13 +15,14 @@ import javafx.scene.text.Font;
 
 
 public class Main extends Application {
-	//global variables
+	//global variables  private instance variables
 	 private TextField  textField= new TextField();
-	 private long num1 =0;
+	 private double num1 =0;
 	 private  String op= "";
 	 private boolean start = true;
-	 
+	
 	@Override
+	//The throws keyword is used to declare which exceptions can be thrown from a method
 	public void start(Stage primaryStage) throws Exception{
 		
 		textField.setFont(Font.font(20));
@@ -45,40 +46,46 @@ public class Main extends Application {
         tile.setAlignment(Pos.TOP_CENTER);
         //adding h and v in TilePane
         tile.getChildren().addAll(
+        		createButtonForClear("AC"),
+        		createButtonForOperators("%"),
+        		createButtonForDecimal("."),	
+        		createButtonForOperators("/"),
+        		
         		createButtonForNumber("7"),
         		createButtonForNumber("8"),
         		createButtonForNumber("9"),
-        		createButtonForOperators("/"),
+        		createButtonForOperators("X"),
         		
         		createButtonForNumber("4"),
         		createButtonForNumber("5"),
         		createButtonForNumber("6"),
-        		createButtonForOperators("X"),
+        		createButtonForOperators("-"),
+        	
         		
         		createButtonForNumber("1"),
         		createButtonForNumber("2"),
-        		
         		createButtonForNumber("3"),
-        		createButtonForOperators("-"),
+        		createButtonForOperators("+"),
         		
+        		
+        		createButtonForNumber("00"),
         		createButtonForNumber("0"),
-        		createButtonForClear("C"),
-        		createButtonForOperators("="),
-        		createButtonForOperators("+")
-        		
+        		createButtonForBackspace("B"),  
+        	    createButtonForOperators("=") 
         		);
         
-		
+		//adding StackPane in BorderPane root
 		BorderPane root = new BorderPane();
 		root.setTop(stackpane);
 		//adding the buttons/tilepane in borderpane
 		root.setCenter(tile);
 		
 		
-//creating a scene
-		Scene scene=new Scene(root,250,300);
+		
+		Scene scene=new Scene(root,250,370);
+		
 		primaryStage.setScene(scene);
-        primaryStage.setTitle("My Calculator");	
+        primaryStage.setTitle("RICR Calculator");	
         
         
         
@@ -101,7 +108,7 @@ public class Main extends Application {
 		button.setFont(Font.font(18));
 		button.setPrefSize(50,50);
 		
-		button.setOnAction(this::processNumbers);
+		button.setOnAction(this::processNumbers);	
 		return button;
 	}
 		
@@ -110,8 +117,14 @@ public class Main extends Application {
             Button button = new Button(ch);       
             button.setFont(Font.font(18));
 			button.setPrefSize(50,50);
+		    // Check if the button text is "=" and set its color to blue
+		    if (ch.equals("=")) {
+		        button.setStyle("-fx-background-color: skyblue;");
+		    }
+
 			
-			button.setOnAction(this::processOperators);
+			//method reference operator is used
+			button.setOnAction(this::processOperators);			
 			return button;
 		}
 		
@@ -129,13 +142,45 @@ public class Main extends Application {
 			return button;
 		}
 		
-	//this method will return backspace
+	//methods return a javafx button object
 			private Button createButtonForBackspace(String ch) {
-			Button button = new Button(ch);
-			button.setFont(Font.font(18));
-			button.setPrefSize(50,50);
-			return button;
-		}
+		        Button button = new Button(ch);
+		        button.setFont(Font.font(18));
+		        button.setPrefSize(50, 50);
+		        
+ //The text of the backspace button is set to the Unicode character for backspace, which is "\u232B".
+		        // Set the text of the backspace button to a symbol indicating backspace
+		        button.setText("\u232B");
+
+		        //lambda expression to define an EventHandler for the ActionEvent
+		        button.setOnAction(e -> {
+		       	//When the button is clicked, it retrieves the text
+		        //currently displayed in the textField
+		            String text = textField.getText();
+		        //If the text length is greater than 0 (i.e., there is text to delete),
+		       //it removes the last character from the text by using the substring method and updates the textField with the modified text.     
+		            if (text.length() > 0) {
+		                textField.setText(text.substring(0, text.length() - 1));
+		            }
+		        });
+
+		        return button;
+		    }
+
+		    private Button createButtonForDecimal(String ch) {
+		        Button button = new Button(ch);
+		        button.setFont(Font.font(18));
+		        button.setPrefSize(50, 50);
+
+		        button.setOnAction(e -> {
+		            String text = textField.getText();
+		            if (!text.contains(".")) {
+		                textField.setText(text + ".");
+		            }
+		        });
+
+		        return button;
+		    }
 
 			
 			private void processNumbers(ActionEvent e) {
@@ -146,7 +191,9 @@ public class Main extends Application {
 				String value=((Button)e.getSource()).getText();
 				textField.setText(textField.getText()+value);
 			}
+		
 			
+		
 			
 			private void processOperators(ActionEvent e) {
 				String value=((Button)e.getSource()).getText();
@@ -154,7 +201,7 @@ public class Main extends Application {
 				if(!value.equals("=")) {
 					if(!op.isEmpty())
 						return;
-					num1=Long.parseLong(textField.getText());
+					num1=Double.parseDouble(textField.getText());
 					op=value;
 					textField.setText("");
 					
@@ -163,8 +210,8 @@ public class Main extends Application {
 				else {
 					if(op.isEmpty())
 						return;
-					long num2=Long.parseLong(textField.getText());
-					float result =calculate(num1,num2,op);
+					double num2=Double.parseDouble(textField.getText());
+					double result = calculate(num1,num2,op);
 					textField.setText(String.valueOf(result));
 					start=true;
 					op="";
@@ -172,7 +219,8 @@ public class Main extends Application {
 				
 			}
 			
-			private float calculate(long num1,long num2, String operator) {
+			
+			private double calculate(double num1,double num2, String operator) {
 				switch(operator) {
 				case "+":
 					return num1+num2;
@@ -180,6 +228,9 @@ public class Main extends Application {
 					return num1-num2;
 				case "X":
 					return num1*num2;
+					
+				case "%":
+					return num1%num2;
 				case "/":
 					if(num2==0)
 						return 0;
