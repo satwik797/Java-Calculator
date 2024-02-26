@@ -77,32 +77,28 @@ public class Main extends Application {
 		//adding StackPane in BorderPane root
 		BorderPane root = new BorderPane();
 		root.setTop(stackpane);
+		
 		//adding the buttons/tilepane in borderpane
 		root.setCenter(tile);
 		
-		
-		
-		Scene scene=new Scene(root,250,370);
+		Scene scene=new Scene(root,250,373);
 		
 		primaryStage.setScene(scene);
         primaryStage.setTitle("RICR Calculator");	
-        
-        
-        
-        //cant be resizable
+          
+        //cant resize the calculator
         primaryStage.setResizable(false);
         primaryStage.show();
 		
 	}
 	
-	//4 methods for 4 different works
-	//method1 - for operands
-	//method2 - for operators
-	//method3 - for clear screen
-	//method4 - for backspace
+		//4 methods for 4 different works to return buttons
+		//method1 - for operands
+		//method2 - for operators
+		//method3 - for clear screen
+		//method4 - for backspace
 	
-	
-	//this method will return buttons
+		//this method will return buttons for numbers
 		private Button createButtonForNumber(String ch) {	
 		Button button = new Button(ch);
 		button.setFont(Font.font(18));
@@ -112,7 +108,7 @@ public class Main extends Application {
 		return button;
 	}
 		
-	//this method will return operators
+		//this method will return operators button
 			private Button createButtonForOperators(String ch) {
             Button button = new Button(ch);       
             button.setFont(Font.font(18));
@@ -128,7 +124,7 @@ public class Main extends Application {
 			return button;
 		}
 		
-    //this method will return clear
+			//this method will return clear button
 			private Button createButtonForClear(String ch) {
 			Button button = new Button(ch);
 			button.setFont(Font.font(18));
@@ -142,32 +138,36 @@ public class Main extends Application {
 			return button;
 		}
 		
-	//methods return a javafx button object
+			//methods return a javafx button object
 			private Button createButtonForBackspace(String ch) {
-		        Button button = new Button(ch);
-		        button.setFont(Font.font(18));
-		        button.setPrefSize(50, 50);
+				
+			        Button button = new Button(ch);
+			        button.setFont(Font.font(18));
+			        button.setPrefSize(50, 50);
 		        
- //The text of the backspace button is set to the Unicode character for backspace, which is "\u232B".
-		        // Set the text of the backspace button to a symbol indicating backspace
-		        button.setText("\u232B");
+			        //The text of the backspace button is set to the Unicode character for backspace, which is "\u232B".
+			        // Set the text of the backspace button to a symbol indicating backspace
+		        	button.setText("\u232B");
 
-		        //lambda expression to define an EventHandler for the ActionEvent
-		        button.setOnAction(e -> {
-		       	//When the button is clicked, it retrieves the text
-		        //currently displayed in the textField
+		        	//lambda expression to define an EventHandler for the ActionEvent
+		        	//When the button is clicked, it retrieves the text
+			        //currently displayed in the textField
+		        	button.setOnAction(e -> {
+		       	
+		        	//If the text length is greater than 0 (i.e., there is text to delete),
+		 		    //it removes the last character from the text by using the substring method and updates the textField with the modified text.     
 		            String text = textField.getText();
-		        //If the text length is greater than 0 (i.e., there is text to delete),
-		       //it removes the last character from the text by using the substring method and updates the textField with the modified text.     
+		       
 		            if (text.length() > 0) {
-		                textField.setText(text.substring(0, text.length() - 1));
-		            }
-		        });
+		                	textField.setText(text.substring(0, text.length() - 1));
+		            	}
+		        	});
 
-		        return button;
+		        	return button;
 		    }
 
 		    private Button createButtonForDecimal(String ch) {
+		    	
 		        Button button = new Button(ch);
 		        button.setFont(Font.font(18));
 		        button.setPrefSize(50, 50);
@@ -184,6 +184,7 @@ public class Main extends Application {
 
 			
 			private void processNumbers(ActionEvent e) {
+				
 				if(start) {
 					textField.setText("");
 					start=false;
@@ -197,6 +198,7 @@ public class Main extends Application {
 			
 			private void processOperators(ActionEvent e) {
 				String value=((Button)e.getSource()).getText();
+				
 				//if user enter other operators than '='
 				if(!value.equals("=")) {
 					if(!op.isEmpty())
@@ -206,6 +208,7 @@ public class Main extends Application {
 					textField.setText("");
 					
 				}
+				
 				//if user enter operator '='
 				else {
 					if(op.isEmpty())
