@@ -13,7 +13,7 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.TilePane;
 import javafx.scene.text.Font;
 
-//harsh
+
 public class Main extends Application {
 	//global variables  private instance variables
 	 private TextField  textField= new TextField();
